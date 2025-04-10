@@ -1,4 +1,4 @@
-package com.example.myapp;
+package com.example.javafxapp;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
