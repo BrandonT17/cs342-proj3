@@ -1,155 +1,3 @@
-/*package com.example.javafxapp.scenes;
-
-import com.example.javafxapp.SceneManager;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.text.Font;
-
-public class GameplayScene {
-    private static final int ROWS = 6;
-    private static final int COLS = 7;
-
-    public static Scene create(SceneManager sceneManager) {
-        // Round counter
-        SimpleIntegerProperty round = new SimpleIntegerProperty(1);
-
-        // Round display
-        Label roundLabel = new Label();
-        roundLabel.setFont(new Font(24));
-        roundLabel.setTextFill(Color.WHITE);
-        roundLabel.textProperty().bind(round.asString("ROUND %d"));
-
-        // Player 1 VBox
-        Circle redCircle = new Circle(30, Color.RED);
-        Label p1Name = new Label("John_doe_224");
-        Label p1Wins = new Label("0 wins");
-        VBox player1Box = new VBox(redCircle, p1Name, p1Wins);
-        player1Box.setAlignment(Pos.CENTER);
-        player1Box.setSpacing(10);
-        player1Box.setPadding(new Insets(10));
-        player1Box.setStyle("-fx-background-color: white;");
-
-        // Player 2 VBox
-        Circle yellowCircle = new Circle(30, Color.YELLOW);
-        Label p2Name = new Label("jimmy_john21");
-        Label p2Wins = new Label("0 wins");
-        VBox player2Box = new VBox(yellowCircle, p2Name, p2Wins);
-        player2Box.setAlignment(Pos.CENTER);
-        player2Box.setSpacing(10);
-        player2Box.setPadding(new Insets(10));
-        player2Box.setStyle("-fx-background-color: white;");
-
-        // Turn label
-        Label turnLabel = new Label("John_doe_224’s turn...");
-        turnLabel.setTextFill(Color.WHITE);
-
-        // Connect 4 board state
-        Circle[][] boardCircles = new Circle[ROWS][COLS];
-        int[] columnHeights = new int[COLS]; // Tracks number of discs per column
-        boolean[] currentPlayer = {true}; // true = red, false = yellow
-
-        // Connect 4 Board Grid
-        GridPane boardGrid = new GridPane();
-        boardGrid.setHgap(5);
-        boardGrid.setVgap(5);
-        boardGrid.setAlignment(Pos.CENTER);
-        boardGrid.setStyle("-fx-background-color: navy; -fx-padding: 10;");
-
-        for (int row = 0; row < ROWS; row++) {
-            for (int col = 0; col < COLS; col++) {
-                Circle slot = new Circle(25, Color.LIGHTBLUE);
-                boardCircles[row][col] = slot;
-                boardGrid.add(slot, col, row);
-            }
-        }
-
-        // Add column click listeners
-        for (int col = 0; col < COLS; col++) {
-            final int colIndex = col;
-            StackPane columnOverlay = new StackPane();
-            columnOverlay.setMinSize(55, ROWS * 55);
-            columnOverlay.setOnMouseClicked(e -> {
-                if (columnHeights[colIndex] < ROWS) {
-                    int rowToPlace = ROWS - 1 - columnHeights[colIndex];
-                    Circle slot = boardCircles[rowToPlace][colIndex];
-                    slot.setFill(currentPlayer[0] ? Color.RED : Color.YELLOW);
-
-                    columnHeights[colIndex]++;
-                    round.set(round.get() + 1);
-
-                    // Toggle player
-                    currentPlayer[0] = !currentPlayer[0];
-                    turnLabel.setText(currentPlayer[0] ? "John_doe_224’s turn..." : "jimmy_john21’s turn...");
-                }
-            });
-            boardGrid.add(columnOverlay, col, 0, 1, ROWS);
-        }
-
-        // Chat area
-        TextArea chatArea = new TextArea("John_doe_224 : you suck");
-        chatArea.setPrefHeight(50);
-        chatArea.setEditable(false);
-
-        TextField chatInput = new TextField();
-        chatInput.setPromptText("Enter message");
-        Button sendBtn = new Button("Send");
-
-        HBox chatInputRow = new HBox(chatInput, sendBtn);
-        chatInputRow.setSpacing(5);
-        chatInputRow.setAlignment(Pos.CENTER_LEFT);
-
-        VBox chatBox = new VBox(chatArea, chatInputRow);
-        chatBox.setSpacing(5);
-
-        // Bottom buttons
-        Button quitGame = new Button("Quit Game");
-        Button reset = new Button("Reset");
-        HBox bottomButtons = new HBox(quitGame, reset);
-        bottomButtons.setSpacing(20);
-        bottomButtons.setAlignment(Pos.CENTER);
-
-        // Reset logic
-        reset.setOnAction(e -> {
-            for (int row = 0; row < ROWS; row++) {
-                for (int col = 0; col < COLS; col++) {
-                    boardCircles[row][col].setFill(Color.LIGHTBLUE);
-                }
-            }
-            for (int i = 0; i < COLS; i++) columnHeights[i] = 0;
-            currentPlayer[0] = true;
-            round.set(1);
-            turnLabel.setText("John_doe_224’s turn...");
-        });
-
-        quitGame.setOnAction(e -> sceneManager.showMainMenu());
-
-        // Layout setup
-        VBox leftCol = new VBox(player1Box);
-        VBox rightCol = new VBox(player2Box);
-        VBox centerCol = new VBox(boardGrid, turnLabel);
-        centerCol.setSpacing(10);
-        centerCol.setAlignment(Pos.CENTER);
-
-        HBox boardSection = new HBox(leftCol, centerCol, rightCol);
-        boardSection.setSpacing(40);
-        boardSection.setAlignment(Pos.CENTER);
-
-        VBox mainLayout = new VBox(roundLabel, boardSection, chatBox, bottomButtons);
-        mainLayout.setSpacing(20);
-        mainLayout.setAlignment(Pos.CENTER);
-        mainLayout.setPadding(new Insets(20));
-        mainLayout.setStyle("-fx-background-color: linear-gradient(to bottom, #3a9bdc, #0d58a6);");
-
-        return new Scene(mainLayout, 800, 600);
-    }
-}*/
-
 package com.example.javafxapp.scenes;
 
 import com.example.javafxapp.SceneManager;
@@ -166,45 +14,48 @@ import javafx.scene.text.Font;
 
 public class GameplayScene {
     public static Scene create(SceneManager sceneManager) {
-        // Round display
+        // display current round
         Label roundLabel = new Label("ROUND 1");
-        roundLabel.setFont(new Font(24));
-        roundLabel.setTextFill(Color.WHITE);
+            roundLabel.setFont(new Font(24));
+            roundLabel.setTextFill(Color.WHITE);
 
-        // Player 1 VBox
+        // player 1 HUD
         Circle redCircle = new Circle(30, Color.RED);
-        Label p1Name = new Label("John_doe_224");
+        Label p1Name = new Label("player 1");
         Label p1Wins = new Label("0 wins");
         VBox player1Box = new VBox(redCircle, p1Name, p1Wins);
-        player1Box.setAlignment(Pos.CENTER);
-        player1Box.setSpacing(10);
-        player1Box.setPadding(new Insets(10));
-        player1Box.setStyle("-fx-background-color: white;");
+            player1Box.setAlignment(Pos.CENTER);
+            player1Box.setSpacing(10);
+            player1Box.setPadding(new Insets(10));
+            player1Box.setStyle("-fx-background-color: white;");
+            player1Box.setMinWidth(100);
 
-        // Player 2 VBox
+        // player 2 HUD
         Circle yellowCircle = new Circle(30, Color.YELLOW);
-        Label p2Name = new Label("jimmy_john21");
+        Label p2Name = new Label("player 2");
         Label p2Wins = new Label("0 wins");
         VBox player2Box = new VBox(yellowCircle, p2Name, p2Wins);
-        player2Box.setAlignment(Pos.CENTER);
-        player2Box.setSpacing(10);
-        player2Box.setPadding(new Insets(10));
-        player2Box.setStyle("-fx-background-color: white;");
+            player2Box.setAlignment(Pos.CENTER);
+            player2Box.setSpacing(10);
+            player2Box.setPadding(new Insets(10));
+            player2Box.setStyle("-fx-background-color: white;");
+            player2Box.setMinWidth(100);
 
-        // Game state
+        // game state
         int[] columnHeights = new int[7];
         int[][] boardState = new int[6][7];
         int[] currentPlayer = {1};
         int[] round = {1};
         boolean[] gameOver = {false};
 
-        // Connect 4 Board Grid
+        // board grid using gridpane, board background
         GridPane boardGrid = new GridPane();
-        boardGrid.setHgap(5);
-        boardGrid.setVgap(5);
-        boardGrid.setAlignment(Pos.CENTER);
-        boardGrid.setStyle("-fx-background-color: navy; -fx-padding: 10;");
-
+            boardGrid.setHgap(5);
+            boardGrid.setVgap(5);
+            boardGrid.setAlignment(Pos.CENTER);
+            boardGrid.setStyle("-fx-background-color: navy; -fx-padding: 10;");
+        
+        // initialize empty spots
         Circle[][] circleNodes = new Circle[6][7];
         for (int row = 0; row < 6; row++) {
             for (int col = 0; col < 7; col++) {
@@ -214,48 +65,58 @@ public class GameplayScene {
             }
         }
 
-        // Turn label
+        // display user turn
+        // TODO: display actual usernames using play1username and player2username variables
         Label turnLabel = new Label("John_doe_224’s turn...");
-        turnLabel.setTextFill(Color.WHITE);
+            turnLabel.setTextFill(Color.WHITE);
 
-        // Chat area
-        TextArea chatArea = new TextArea("John_doe_224 : you suck");
-        chatArea.setPrefHeight(50);
-        chatArea.setEditable(false);
+        // user chat
+        TextArea chatArea = new TextArea();
+            chatArea.setPromptText("Chats will display here");
+            chatArea.setPrefHeight(50);
+            chatArea.setEditable(false);
+            chatArea.setMaxWidth(400);
+
         TextField chatInput = new TextField();
-        chatInput.setPromptText("Enter message");
+            chatInput.setPromptText("Enter message");
+            chatInput.setPrefWidth(350);
+
         Button sendBtn = new Button("Send");
         HBox chatInputRow = new HBox(chatInput, sendBtn);
-        chatInputRow.setSpacing(5);
-        chatInputRow.setAlignment(Pos.CENTER_LEFT);
+            chatInputRow.setSpacing(5);
+            chatInputRow.setAlignment(Pos.CENTER);
+        
         VBox chatBox = new VBox(chatArea, chatInputRow);
-        chatBox.setSpacing(5);
+            chatBox.setSpacing(5);
+            chatBox.setAlignment(Pos.CENTER);
 
-        // Bottom buttons
+        // buttons
         Button quitGame = new Button("Quit Game");
         Button reset = new Button("Reset");
         HBox bottomButtons = new HBox(quitGame, reset);
-        bottomButtons.setSpacing(20);
-        bottomButtons.setAlignment(Pos.CENTER);
+            bottomButtons.setSpacing(20);
+            bottomButtons.setAlignment(Pos.CENTER);
 
-        // Layout
+        // layout
         VBox leftCol = new VBox(player1Box);
+            leftCol.setAlignment(Pos.CENTER);
         VBox rightCol = new VBox(player2Box);
+            rightCol.setAlignment(Pos.CENTER);
         VBox centerCol = new VBox(boardGrid, turnLabel);
-        centerCol.setSpacing(10);
-        centerCol.setAlignment(Pos.CENTER);
+            centerCol.setSpacing(10);
+            centerCol.setAlignment(Pos.CENTER);
 
         HBox boardSection = new HBox(leftCol, centerCol, rightCol);
-        boardSection.setSpacing(40);
-        boardSection.setAlignment(Pos.CENTER);
+            boardSection.setSpacing(40);
+            boardSection.setAlignment(Pos.CENTER);
 
         VBox mainLayout = new VBox(roundLabel, boardSection, chatBox, bottomButtons);
-        mainLayout.setSpacing(20);
-        mainLayout.setAlignment(Pos.CENTER);
-        mainLayout.setPadding(new Insets(20));
-        mainLayout.setStyle("-fx-background-color: linear-gradient(to bottom, #3a9bdc, #0d58a6);");
+            mainLayout.setSpacing(20);
+            mainLayout.setAlignment(Pos.CENTER);
+            mainLayout.setPadding(new Insets(20));
+            mainLayout.setStyle("-fx-background-color: linear-gradient(to bottom, #3a9bdc, #0d58a6);");
 
-        // Column click handling
+        // user interaction
         for (int col = 0; col < 7; col++) {
             int currentCol = col;
             Rectangle clickableArea = new Rectangle(50, 300);
@@ -271,10 +132,11 @@ public class GameplayScene {
                 if (checkWin(boardState, row, currentCol, currentPlayer[0])) {
                     turnLabel.setText((currentPlayer[0] == 1 ? "John_doe_224" : "jimmy_john21") + " wins!");
                     gameOver[0] = true;
+                    sceneManager.showGameEnd();
                     return;
                 }
 
-                // Check for draw
+                // check for draw
                 boolean draw = true;
                 for (int i = 0; i < 7; i++) {
                     if (columnHeights[i] < 6) {
@@ -288,11 +150,11 @@ public class GameplayScene {
                     return;
                 }
 
-                // Switch player
+                // switch player turn
                 currentPlayer[0] = currentPlayer[0] == 1 ? 2 : 1;
                 turnLabel.setText(currentPlayer[0] == 1 ? "John_doe_224’s turn..." : "jimmy_john21’s turn...");
 
-                // Update round
+                // increment round
                 round[0]++;
                 roundLabel.setText("ROUND " + round[0]);
             });
@@ -300,7 +162,7 @@ public class GameplayScene {
             boardGrid.add(clickableArea, col, 0, 1, 6);
         }
 
-        // Reset button
+        // reset board
         reset.setOnAction(e -> {
             for (int r = 0; r < 6; r++) {
                 for (int c = 0; c < 7; c++) {
@@ -329,17 +191,15 @@ public class GameplayScene {
     }
 
     private static boolean checkDirection(int[][] board, int row, int col, int player, int dr, int dc) {
-        int count = 1;
 
-        // Forward
+        int count = 1;
         int r = row + dr, c = col + dc;
         while (r >= 0 && r < 6 && c >= 0 && c < 7 && board[r][c] == player) {
             count++;
             r += dr;
             c += dc;
         }
-
-        // Backward
+        // count backwards
         r = row - dr;
         c = col - dc;
         while (r >= 0 && r < 6 && c >= 0 && c < 7 && board[r][c] == player) {

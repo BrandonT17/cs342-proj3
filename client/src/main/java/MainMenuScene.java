@@ -16,7 +16,7 @@ public class MainMenuScene {
         // app logo
         Image image = new Image(MainMenuScene.class.getResourceAsStream("/connect4logo.png"));
         ImageView imageView = new ImageView(image);
-            imageView.setFitWidth(400);
+            imageView.setFitWidth(300);
             imageView.setPreserveRatio(true);
 
         // username
@@ -25,8 +25,8 @@ public class MainMenuScene {
             prompt.setTextFill(Color.WHITE);
         
         TextField username = new TextField();
-                username.setPromptText("Type username here");
-        
+            username.setPromptText("Type username here");
+            username.setMaxWidth(300);
         // username validation
         String invalid = "Username not available!";
         String valid = "Username available.";
@@ -37,7 +37,8 @@ public class MainMenuScene {
         connect.setOnAction(e -> {
             // TODO: validate username and connect to server
             // sceneManager.showConnecting();
-            sceneManager.showGameplay();
+            // sceneManager.showGameplay();
+            sceneManager.showGameEnd();
         });
 
         // layout
