@@ -1,6 +1,9 @@
+com/example/javafxapp/MessageType.class
 com/example/javafxapp/scenes/GameplayScene.class
 com/example/javafxapp/scenes/ConnectingScene.class
 com/example/javafxapp/scenes/GameEndScene.class
 com/example/javafxapp/scenes/MainMenuScene.class
+com/example/javafxapp/Message.class
 com/example/javafxapp/SceneManager.class
+com/example/javafxapp/network/NetworkClient.class
 com/example/javafxapp/App.class
