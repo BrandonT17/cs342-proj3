@@ -47,6 +47,7 @@ public class ClientHandler implements Runnable {
     public void disconnect() {
         try {
             if (username != null) {
+                server.unregisterUsername(username);
                 server.playerDisconnected(username);
             }
             if (input != null) input.close();
@@ -64,8 +65,17 @@ public class ClientHandler implements Runnable {
     private void handleMessage(Message message) {
         switch (message.getType()) {
             case CONNECT:
-                this.username = message.getSender();
+                /*this.username = message.getSender();
                 server.playerConnected(username);
+                break;*/
+                String desiredUsername = message.getSender();
+                if (server.registerUsername(desiredUsername)) {
+                    this.username = desiredUsername;
+                    server.playerConnected(username);
+                    sendMessage(new Message(MessageType.CONNECT_ACK, "Welcome!", "Server"));
+                } else {
+                    sendMessage(new Message(MessageType.ERROR, "Username already taken", "Server"));
+                }
                 break;
             case DISCONNECT:
                 disconnect();
@@ -84,6 +94,15 @@ public class ClientHandler implements Runnable {
                         System.out.println("Error: " + e.getMessage());
                     }
                 }
+                break;
+            case CHECK_USERNAME:
+                String nameToCheck = message.getSender();
+                boolean taken = server.isUsernameTaken(nameToCheck);
+                Message reply = new Message(
+                    taken ? MessageType.USERNAME_TAKEN : MessageType.USERNAME_AVAILABLE,
+                    nameToCheck, "Server"
+                );
+                sendMessage(reply);
                 break;
         }
     }
