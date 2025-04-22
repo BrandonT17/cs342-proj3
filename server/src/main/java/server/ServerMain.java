@@ -1,37 +1,4 @@
-<<<<<<< Updated upstream:server/src/main/java/ServerMain.java
-package com.example.server;
-
-import com.example.javafxapp.Message;
-import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
-
-public class ServerMain {
-    public static void main(String[] args) {
-        int port = 12345;
-
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("Server started on port " + port);
-
-            while (true) {
-                System.out.println("Waiting for clients...");
-
-                Socket clientSocket = serverSocket.accept();
-                System.out.println("Client connected!");
-
-                // Start a new thread to handle this client
-                ClientHandler handler = new ClientHandler(clientSocket);
-                new Thread(handler).start();
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-}
-
-=======
-package com.example.javafxapp;
+package server;
 
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -103,5 +70,4 @@ public class ServerMain {
     public GameManager getGameManager() {
         return gameManager;
     }
-} 
->>>>>>> Stashed changes:server/src/main/java/com/example/javafxapp/ServerMain.java
+}

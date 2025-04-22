@@ -1,4 +1,4 @@
-package com.example.javafxapp;
+package server;
 
 public enum MessageType {
     CONNECT,

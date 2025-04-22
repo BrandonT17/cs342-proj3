@@ -1,17 +1,9 @@
-<<<<<<< Updated upstream
-/Users/brandonthach/Documents/CS342/Project3/server/src/main/java/Message.java
-/Users/brandonthach/Documents/CS342/Project3/server/src/main/java/MessageType.java
-/Users/brandonthach/Documents/CS342/Project3/server/src/main/java/App.java
-/Users/brandonthach/Documents/CS342/Project3/server/src/main/java/ServerMain.java
-/Users/brandonthach/Documents/CS342/Project3/server/src/main/java/ClientHandler.java
-=======
-/Users/ayooluwaadeleye/Desktop/cs342-proj3/server/src/main/java/com/example/javafxapp/ServerGUI.java
-/Users/ayooluwaadeleye/Desktop/cs342-proj3/server/src/main/java/com/example/javafxapp/MessageType.java
-/Users/ayooluwaadeleye/Desktop/cs342-proj3/server/src/main/java/com/example/javafxapp/GameManager.java
-/Users/ayooluwaadeleye/Desktop/cs342-proj3/server/src/main/java/com/example/javafxapp/Message.java
-/Users/ayooluwaadeleye/Desktop/cs342-proj3/server/src/main/java/com/example/javafxapp/GameSession.java
-/Users/ayooluwaadeleye/Desktop/cs342-proj3/server/src/main/java/com/example/javafxapp/ServerMain.java
-/Users/ayooluwaadeleye/Desktop/cs342-proj3/server/src/main/java/com/example/javafxapp/App.java
-/Users/ayooluwaadeleye/Desktop/cs342-proj3/server/src/main/java/com/example/javafxapp/GameLogic.java
-/Users/ayooluwaadeleye/Desktop/cs342-proj3/server/src/main/java/com/example/javafxapp/ClientHandler.java
->>>>>>> Stashed changes
+/Users/ayooluwaadeleye/Desktop/cs342-proj3/server/src/main/java/server/ServerMain.java
+/Users/ayooluwaadeleye/Desktop/cs342-proj3/server/src/main/java/server/Message.java
+/Users/ayooluwaadeleye/Desktop/cs342-proj3/server/src/main/java/server/App.java
+/Users/ayooluwaadeleye/Desktop/cs342-proj3/server/src/main/java/server/MessageType.java
+/Users/ayooluwaadeleye/Desktop/cs342-proj3/server/src/main/java/server/GameLogic.java
+/Users/ayooluwaadeleye/Desktop/cs342-proj3/server/src/main/java/server/ClientHandler.java
+/Users/ayooluwaadeleye/Desktop/cs342-proj3/server/src/main/java/server/GameManager.java
+/Users/ayooluwaadeleye/Desktop/cs342-proj3/server/src/main/java/server/GameSession.java
+/Users/ayooluwaadeleye/Desktop/cs342-proj3/server/src/main/java/server/ServerGUI.java
