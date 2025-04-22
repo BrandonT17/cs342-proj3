@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 /Users/brandonthach/Documents/CS342/Project3/client/src/main/java/MainMenuScene.java
 /Users/brandonthach/Documents/CS342/Project3/client/src/main/java/App.java
 /Users/brandonthach/Documents/CS342/Project3/client/src/main/java/MessageType.java
@@ -7,3 +8,12 @@
 /Users/brandonthach/Documents/CS342/Project3/client/src/main/java/GameplayScene.java
 /Users/brandonthach/Documents/CS342/Project3/client/src/main/java/SceneManager.java
 /Users/brandonthach/Documents/CS342/Project3/client/src/main/java/ConnectingScene.java
+=======
+/Users/ayooluwaadeleye/Desktop/cs342-proj3/client/src/main/java/GameplayScene.java
+/Users/ayooluwaadeleye/Desktop/cs342-proj3/client/src/main/java/ConnectingScene.java
+/Users/ayooluwaadeleye/Desktop/cs342-proj3/client/src/main/java/Message.java
+/Users/ayooluwaadeleye/Desktop/cs342-proj3/client/src/main/java/App.java
+/Users/ayooluwaadeleye/Desktop/cs342-proj3/client/src/main/java/GameEndScene.java
+/Users/ayooluwaadeleye/Desktop/cs342-proj3/client/src/main/java/MainMenuScene.java
+/Users/ayooluwaadeleye/Desktop/cs342-proj3/client/src/main/java/SceneManager.java
+>>>>>>> Stashed changes

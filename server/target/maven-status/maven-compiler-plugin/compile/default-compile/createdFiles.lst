@@ -1,6 +1,18 @@
+<<<<<<< Updated upstream
 com/example/server/ClientHandler.class
 com/example/server/ServerMain.class
 com/example/javafxapp/Message.class
 com/example/javafxapp/MessageType.class
 com/example/server/ClientHandler$1.class
+=======
+com/example/javafxapp/MessageType.class
+com/example/javafxapp/GameLogic.class
+com/example/javafxapp/ClientHandler.class
+com/example/javafxapp/ClientHandler$1.class
+com/example/javafxapp/ServerGUI.class
+com/example/javafxapp/Message.class
+com/example/javafxapp/ServerMain.class
+com/example/javafxapp/GameSession.class
+>>>>>>> Stashed changes
 com/example/javafxapp/App.class
+com/example/javafxapp/GameManager.class
