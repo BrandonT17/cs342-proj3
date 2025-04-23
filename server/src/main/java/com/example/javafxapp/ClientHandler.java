@@ -23,6 +23,7 @@ public class ClientHandler implements Runnable {
         }
     }
 
+    @Override
     public void run() {
         try {
             while (true) {
@@ -68,12 +69,16 @@ public class ClientHandler implements Runnable {
             case CONNECT:
                 String desiredUsername = message.getSender();
                 System.out.println("[SERVER] CONNECT request from: " + desiredUsername);
+
                 if (server.registerUsername(desiredUsername)) {
                     this.username = desiredUsername;
                     server.playerConnected(username);
                     System.out.println("[SERVER] Username accepted: " + username);
+
+                    // ✅ Step 1: Send CONNECT_ACK
                     sendMessage(new Message(MessageType.CONNECT_ACK, "Welcome!", "Server"));
 
+                    // ✅ Step 2: Only after ACK, add player to match pool
                     server.getGameManager().addPlayer(this);
                 } else {
                     System.out.println("[SERVER] Username taken: " + desiredUsername);
