@@ -1,5 +1,4 @@
-package server;
-
+package com.example.javafxapp;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;

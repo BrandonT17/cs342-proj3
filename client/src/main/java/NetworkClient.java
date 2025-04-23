@@ -1,6 +1,7 @@
 package com.example.javafxapp.network;
 
 import com.example.javafxapp.Message;
+import com.example.javafxapp.MessageType;
 import java.io.*;
 import java.net.Socket;
 
@@ -14,6 +15,7 @@ public class NetworkClient {
 
         // Important: ObjectOutputStream must be created before ObjectInputStream!
         out = new ObjectOutputStream(socket.getOutputStream());
+        out.flush();
         in = new ObjectInputStream(socket.getInputStream());
     }
 

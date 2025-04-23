@@ -1,4 +1,5 @@
-package server;
+package com.example.javafxapp;
+
 
 import java.util.Queue;
 import java.util.LinkedList;
@@ -29,6 +30,11 @@ public class GameManager {
             ClientHandler player2 = waitingPlayers.poll();
             GameSession game = new GameSession(player1, player2);
             activeGames.add(game);
+
+            Message startMsg = new Message(MessageType.MATCH_FOUND, "", "Server");
+            player1.sendMessage(startMsg);
+            player2.sendMessage(startMsg);
+
             broadcastServerMessage("Game started between " + player1.getUsername() + " and " + player2.getUsername());
         }
     }

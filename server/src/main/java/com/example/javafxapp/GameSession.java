@@ -1,4 +1,5 @@
-package server;
+package com.example.javafxapp;
+
 
 public class GameSession {
     private String gameId;

@@ -1,4 +1,4 @@
-package server;
+package com.example.javafxapp;
 
 public class GameLogic {
     private int[][] board;

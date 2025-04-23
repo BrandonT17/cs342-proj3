@@ -1,5 +1,7 @@
-package server;
+package com.example.javafxapp;
 
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.IOException;
@@ -10,6 +12,7 @@ public class ServerMain {
     private GameManager gameManager;
     private ServerGUI gui;
     private volatile boolean running;
+    private Set<String> activeUsernames = ConcurrentHashMap.newKeySet();
 
     public ServerMain(ServerGUI gui) {
         this.port = 5001;
@@ -69,5 +72,19 @@ public class ServerMain {
 
     public GameManager getGameManager() {
         return gameManager;
+    }
+
+        public boolean isUsernameTaken(String username) {
+            return activeUsernames.contains(username);
+    }
+
+    public synchronized boolean registerUsername(String username) {
+        if (activeUsernames.contains(username)) return false;
+        activeUsernames.add(username);
+        return true;
+    }
+
+    public synchronized void unregisterUsername(String username) {
+        activeUsernames.remove(username);
     }
 }
