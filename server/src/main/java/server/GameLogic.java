@@ -4,6 +4,8 @@ public class GameLogic {
     private int[][] board;
     private static final int ROWS = 6;
     private static final int COLS = 7;
+    private int lastMoveRow = -1;
+    private int lastMoveCol = -1;
 
     public GameLogic() {
         board = new int[ROWS][COLS];
@@ -17,45 +19,58 @@ public class GameLogic {
         for (int row = ROWS - 1; row >= 0; row--) {
             if (board[row][column] == 0) {
                 board[row][column] = player;
+                lastMoveRow = row;
+                lastMoveCol = column;
                 return true;
             }
         }
         return false;
     }
 
-    public boolean checkWin(int column, int row, int player) {
-        // Check horizontal
-        int count = 0;
-        for (int c = 0; c < COLS; c++) {
-            if (board[row][c] == player) {
-                count++;
-                if (count == 4) return true;
-            } else {
-                count = 0;
-            }
-        }
-
-        // Check vertical
-        count = 0;
-        for (int r = 0; r < ROWS; r++) {
-            if (board[r][column] == player) {
-                count++;
-                if (count == 4) return true;
-            } else {
-                count = 0;
-            }
-        }
-
-        // Check diagonal (both directions)
-        return checkDiagonal(row, column, player);
+    public boolean checkWin() {
+        if (lastMoveRow == -1 || lastMoveCol == -1) return false;
+        int player = board[lastMoveRow][lastMoveCol];
+        return checkHorizontal() || checkVertical() || checkDiagonal();
     }
 
-    private boolean checkDiagonal(int row, int col, int player) {
-        // Check diagonal (top-left to bottom-right)
+    private boolean checkHorizontal() {
+        int player = board[lastMoveRow][lastMoveCol];
+        int count = 0;
+        for (int c = 0; c < COLS; c++) {
+            if (board[lastMoveRow][c] == player) {
+                count++;
+                if (count == 4) return true;
+            } else {
+                count = 0;
+            }
+        }
+        return false;
+    }
+
+    private boolean checkVertical() {
+        int player = board[lastMoveRow][lastMoveCol];
+        int count = 0;
+        for (int r = 0; r < ROWS; r++) {
+            if (board[r][lastMoveCol] == player) {
+                count++;
+                if (count == 4) return true;
+            } else {
+                count = 0;
+            }
+        }
+        return false;
+    }
+
+    private boolean checkDiagonal() {
+        return checkDiagonalDown() || checkDiagonalUp();
+    }
+
+    private boolean checkDiagonalDown() {
+        int player = board[lastMoveRow][lastMoveCol];
         int count = 0;
         for (int i = -3; i <= 3; i++) {
-            int r = row + i;
-            int c = col + i;
+            int r = lastMoveRow + i;
+            int c = lastMoveCol + i;
             if (r >= 0 && r < ROWS && c >= 0 && c < COLS) {
                 if (board[r][c] == player) {
                     count++;
@@ -65,12 +80,15 @@ public class GameLogic {
                 }
             }
         }
+        return false;
+    }
 
-        // Check diagonal (top-right to bottom-left)
-        count = 0;
+    private boolean checkDiagonalUp() {
+        int player = board[lastMoveRow][lastMoveCol];
+        int count = 0;
         for (int i = -3; i <= 3; i++) {
-            int r = row + i;
-            int c = col - i;
+            int r = lastMoveRow - i;
+            int c = lastMoveCol + i;
             if (r >= 0 && r < ROWS && c >= 0 && c < COLS) {
                 if (board[r][c] == player) {
                     count++;
@@ -96,6 +114,8 @@ public class GameLogic {
                 board[r][c] = 0;
             }
         }
+        lastMoveRow = -1;
+        lastMoveCol = -1;
     }
 
     public String getBoardState() {
@@ -111,5 +131,13 @@ public class GameLogic {
 
     public int[][] getBoardArray() {
         return board;
+    }
+
+    public int getLastMoveRow() {
+        return lastMoveRow;
+    }
+
+    public int getLastMoveCol() {
+        return lastMoveCol;
     }
 } 
