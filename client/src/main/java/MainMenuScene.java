@@ -36,9 +36,9 @@ public class MainMenuScene {
         Button connect = new Button("Connect");
         connect.setOnAction(e -> {
             // TODO: validate username and connect to server
-            // sceneManager.showConnecting();
+            sceneManager.showConnecting();
             // sceneManager.showGameplay();
-            sceneManager.showGameEnd();
+            // sceneManager.showGameEnd();
         });
 
         // layout
