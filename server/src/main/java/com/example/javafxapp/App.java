@@ -1,4 +1,4 @@
-package server;
+package com.example.javafxapp;
 
 import javafx.application.Application;
 import javafx.scene.Scene;

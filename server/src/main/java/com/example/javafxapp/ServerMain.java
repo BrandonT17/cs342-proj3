@@ -1,4 +1,4 @@
-package server;
+package com.example.javafxapp;
 
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;

@@ -1,4 +1,5 @@
-package server;
+package com.example.javafxapp;
+
 
 import java.util.Queue;
 import java.util.LinkedList;

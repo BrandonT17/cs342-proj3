@@ -1,4 +1,4 @@
-package server;
+package com.example.javafxapp;
 
 import java.io.*;
 import java.net.Socket;
@@ -15,8 +15,9 @@ public class ClientHandler implements Runnable {
         this.socket = socket;
         this.server = server;
         try {
-            output = new ObjectOutputStream(socket.getOutputStream());
+            
             input = new ObjectInputStream(socket.getInputStream());
+            output = new ObjectOutputStream(socket.getOutputStream());
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }

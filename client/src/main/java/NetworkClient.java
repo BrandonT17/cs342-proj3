@@ -1,6 +1,7 @@
 package com.example.javafxapp.network;
 
 import com.example.javafxapp.Message;
+import com.example.javafxapp.MessageType;
 import java.io.*;
 import java.net.Socket;
 

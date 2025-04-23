@@ -7,5 +7,10 @@ public enum MessageType {
     MOVE,
     GAME_START,
     GAME_UPDATE,
-    GAME_END
+    GAME_END,
+    CONNECT_ACK,
+    ERROR,
+    CHECK_USERNAME,
+    USERNAME_AVAILABLE,
+    USERNAME_TAKEN
 } 
