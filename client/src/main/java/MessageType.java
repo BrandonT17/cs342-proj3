@@ -1,5 +1,7 @@
 package com.example.javafxapp;
 
+// all the different types of messages that will appear in the server 
+
 public enum MessageType {
     CONNECT,
     DISCONNECT,
@@ -12,5 +14,6 @@ public enum MessageType {
     ERROR,
     CHECK_USERNAME,
     USERNAME_AVAILABLE,
-    USERNAME_TAKEN
+    USERNAME_TAKEN,
+    MATCH_FOUND // wait for partner
 } 

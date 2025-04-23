@@ -54,6 +54,7 @@ public class MainMenuScene {
                 client.sendMessage(connectMsg);
 
                 Message response = client.readMessage();
+                
 
                 if (response.getType() == MessageType.CONNECT_ACK) {
                     validity.setText("Username accepted!");

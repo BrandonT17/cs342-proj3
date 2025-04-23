@@ -1,4 +1,3 @@
-// package server;
 package com.example.javafxapp;
 
 public enum MessageType {
@@ -13,5 +12,6 @@ public enum MessageType {
     ERROR,
     CHECK_USERNAME,
     USERNAME_AVAILABLE,
-    USERNAME_TAKEN
+    USERNAME_TAKEN,
+    MATCH_FOUND
 }
