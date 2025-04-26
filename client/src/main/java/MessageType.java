@@ -19,5 +19,6 @@ public enum MessageType {
     USERNAME_AVAILABLE,
     USERNAME_TAKEN,
     MATCH_FOUND, // wait for partner
-    READY_FOR_MATCH // solution to connection scene skip
+    READY_FOR_MATCH, // solution to connection scene skip
+    RESET
 } 

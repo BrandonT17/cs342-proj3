@@ -25,8 +25,9 @@ public class GameplayScene {
         roundLabel.setFont(new Font(24));
         roundLabel.setTextFill(Color.WHITE);
 
+        // Player 1 UI
         Circle redCircle = new Circle(30, Color.RED);
-        Label p1Name = new Label("player 1");
+        Label p1Name = new Label(sceneManager.getUsername()); // Show actual username
         Label p1Wins = new Label("0 wins");
         VBox player1Box = new VBox(redCircle, p1Name, p1Wins);
         player1Box.setAlignment(Pos.CENTER);
@@ -35,8 +36,9 @@ public class GameplayScene {
         player1Box.setStyle("-fx-background-color: white;");
         player1Box.setMinWidth(100);
 
+        // Player 2 UI
         Circle yellowCircle = new Circle(30, Color.YELLOW);
-        Label p2Name = new Label("player 2");
+        Label p2Name = new Label("Waiting for opponent...");
         Label p2Wins = new Label("0 wins");
         VBox player2Box = new VBox(yellowCircle, p2Name, p2Wins);
         player2Box.setAlignment(Pos.CENTER);
@@ -45,6 +47,7 @@ public class GameplayScene {
         player2Box.setStyle("-fx-background-color: white;");
         player2Box.setMinWidth(100);
 
+        // Game state variables
         int[] columnHeights = new int[7];
         int[][] boardState = new int[6][7];
         int[] currentPlayer = {1};
@@ -52,6 +55,7 @@ public class GameplayScene {
         boolean[] gameOver = {false};
         boolean[] myTurn = {false};
 
+        // Game board setup
         GridPane boardGrid = new GridPane();
         boardGrid.setHgap(5);
         boardGrid.setVgap(5);
@@ -67,9 +71,10 @@ public class GameplayScene {
             }
         }
 
-        Label turnLabel = new Label("Waiting for your turn...");
+        Label turnLabel = new Label("Waiting for game to start...");
         turnLabel.setTextFill(Color.WHITE);
 
+        // Chat components
         TextArea chatArea = new TextArea();
         chatArea.setPromptText("Chats will display here");
         chatArea.setPrefHeight(50);
@@ -89,12 +94,14 @@ public class GameplayScene {
         chatBox.setSpacing(5);
         chatBox.setAlignment(Pos.CENTER);
 
+        // Game control buttons
         Button quitGame = new Button("Quit Game");
         Button reset = new Button("Reset");
         HBox bottomButtons = new HBox(quitGame, reset);
         bottomButtons.setSpacing(20);
         bottomButtons.setAlignment(Pos.CENTER);
 
+        // Layout organization
         VBox leftCol = new VBox(player1Box);
         leftCol.setAlignment(Pos.CENTER);
         VBox rightCol = new VBox(player2Box);
@@ -113,24 +120,37 @@ public class GameplayScene {
         mainLayout.setPadding(new Insets(20));
         mainLayout.setStyle("-fx-background-color: linear-gradient(to bottom, #3a9bdc, #0d58a6);");
 
+        // Column click handlers
         for (int col = 0; col < 7; col++) {
             int currentCol = col;
             Rectangle clickableArea = new Rectangle(50, 300);
             clickableArea.setFill(Color.TRANSPARENT);
             clickableArea.setOnMouseClicked((MouseEvent e) -> {
-                if (!myTurn[0] || gameOver[0] || columnHeights[currentCol] >= 6) return;
+                if (!myTurn[0] || gameOver[0] || columnHeights[currentCol] >= 6) {
+                    System.out.println("[CLIENT] Move blocked - Turn:" + myTurn[0] + 
+                                    " GameOver:" + gameOver[0] + 
+                                    " Column:" + columnHeights[currentCol]);
+                    return;
+                }
 
                 try {
-                    Message moveMsg = new Message(MessageType.MOVE, String.valueOf(currentCol), sceneManager.getUsername());
+                    System.out.println("[CLIENT] Sending move for column " + currentCol);
+                    Message moveMsg = new Message(MessageType.MOVE, 
+                                                String.valueOf(currentCol), 
+                                                sceneManager.getUsername());
                     sceneManager.getClient().sendMessage(moveMsg);
                     myTurn[0] = false;
+                    turnLabel.setText("Waiting for opponent...");
                 } catch (IOException ex) {
-                    ex.printStackTrace();
+                    System.out.println("[CLIENT] Error sending move: " + ex.getMessage());
+                    Platform.runLater(() -> 
+                        turnLabel.setText("Error sending move to server"));
                 }
             });
             boardGrid.add(clickableArea, col, 0, 1, 6);
         }
 
+        // Chat message handler
         sendBtn.setOnAction(e -> {
             String text = chatInput.getText().trim();
             if (!text.isEmpty()) {
@@ -139,16 +159,18 @@ public class GameplayScene {
                     sceneManager.getClient().sendMessage(chatMsg);
                     chatInput.clear();
                 } catch (IOException ex) {
-                    ex.printStackTrace();
+                    System.out.println("[CLIENT] Error sending chat: " + ex.getMessage());
                 }
             }
         });
 
+        // Message listener thread
         new Thread(() -> {
             try {
                 while (true) {
                     Message msg = sceneManager.getClient().readMessage();
                     Platform.runLater(() -> {
+                        System.out.println("[CLIENT] Received: " + msg.getType());
                         switch (msg.getType()) {
                             case MOVE_VALID -> {
                                 String[] parts = msg.getMessage().split(",");
@@ -161,11 +183,11 @@ public class GameplayScene {
                                 currentPlayer[0] = player == 1 ? 2 : 1;
                                 round[0]++;
                                 roundLabel.setText("ROUND " + round[0]);
-                                turnLabel.setText(currentPlayer[0] == 1 ? "Your turn" : "Opponent's turn");
                             }
                             case YOUR_TURN -> {
                                 myTurn[0] = true;
-                                turnLabel.setText("Your turn");
+                                System.out.println("[CLIENT] It's now my turn!");
+                                turnLabel.setText("Your turn - Click a column");
                             }
                             case WAIT -> {
                                 myTurn[0] = false;
@@ -174,56 +196,75 @@ public class GameplayScene {
                             case GAME_END -> {
                                 gameOver[0] = true;
                                 turnLabel.setText(msg.getMessage());
+                                sceneManager.showGameEnd();
+                            }
+                            case CHAT -> {
+                                chatArea.appendText(msg.getSender() + ": " + msg.getMessage() + "\n");
+                            }
+                            case GAME_START -> {
+                                // Update opponent's name when game starts
+                                if (msg.getMessage().contains("vs")) {
+                                    String[] players = msg.getMessage().split(" vs ");
+                                    p2Name.setText(players[1]);
+                                }
+                                turnLabel.setText("Game started - waiting for turn");
                             }
                         }
                     });
                 }
             } catch (Exception e) {
-                Platform.runLater(() -> turnLabel.setText("Disconnected from server."));
+                Platform.runLater(() -> {
+                    turnLabel.setText("Disconnected from server");
+                    System.err.println("[CLIENT] Connection error: " + e.getMessage());
+                });
             }
         }).start();
 
+        // Reset button handler
         reset.setOnAction(e -> {
-            for (int r = 0; r < 6; r++) {
-                for (int c = 0; c < 7; c++) {
-                    boardState[r][c] = 0;
-                    circleNodes[r][c].setFill(Color.LIGHTBLUE);
-                }
+            try {
+                Message resetMsg = new Message(MessageType.RESET, "", sceneManager.getUsername());
+                sceneManager.getClient().sendMessage(resetMsg);
+            } catch (IOException ex) {
+                System.out.println("[CLIENT] Error sending reset: " + ex.getMessage());
             }
-            for (int i = 0; i < 7; i++) columnHeights[i] = 0;
-            round[0] = 1;
-            gameOver[0] = false;
-            currentPlayer[0] = 1;
-            roundLabel.setText("ROUND 1");
-            turnLabel.setText("Waiting for your turn...");
         });
 
-        quitGame.setOnAction(e -> sceneManager.showMainMenu());
+        // Quit button handler
+        quitGame.setOnAction(e -> {
+            try {
+                sceneManager.getClient().sendMessage(
+                    new Message(MessageType.DISCONNECT, "", sceneManager.getUsername()));
+                sceneManager.showMainMenu();
+            } catch (IOException ex) {
+                System.out.println("[CLIENT] Error disconnecting: " + ex.getMessage());
+                sceneManager.showMainMenu();
+            }
+        });
 
         return new Scene(mainLayout, 800, 600);
     }
 
     private static boolean checkWin(int[][] board, int row, int col, int player) {
-        return checkDirection(board, row, col, player, 1, 0) ||
-               checkDirection(board, row, col, player, 0, 1) ||
-               checkDirection(board, row, col, player, 1, 1) ||
-               checkDirection(board, row, col, player, 1, -1);
+        return checkDirection(board, row, col, player, 1, 0) ||  // Horizontal
+               checkDirection(board, row, col, player, 0, 1) ||  // Vertical
+               checkDirection(board, row, col, player, 1, 1) ||  // Diagonal down
+               checkDirection(board, row, col, player, 1, -1);   // Diagonal up
     }
 
     private static boolean checkDirection(int[][] board, int row, int col, int player, int dr, int dc) {
         int count = 1;
-        int r = row + dr, c = col + dc;
-        while (r >= 0 && r < 6 && c >= 0 && c < 7 && board[r][c] == player) {
+        // Check in positive direction
+        for (int r = row + dr, c = col + dc; 
+             r >= 0 && r < 6 && c >= 0 && c < 7 && board[r][c] == player; 
+             r += dr, c += dc) {
             count++;
-            r += dr;
-            c += dc;
         }
-        r = row - dr;
-        c = col - dc;
-        while (r >= 0 && r < 6 && c >= 0 && c < 7 && board[r][c] == player) {
+        // Check in negative direction
+        for (int r = row - dr, c = col - dc; 
+             r >= 0 && r < 6 && c >= 0 && c < 7 && board[r][c] == player; 
+             r -= dr, c -= dc) {
             count++;
-            r -= dr;
-            c -= dc;
         }
         return count >= 4;
     }
