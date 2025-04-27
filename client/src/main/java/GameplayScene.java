@@ -27,7 +27,7 @@ public class GameplayScene {
 
         // Player 1 UI
         Circle redCircle = new Circle(30, Color.RED);
-        Label p1Name = new Label(sceneManager.getUsername()); // Show actual username
+        Label p1Name = new Label(sceneManager.getUsername());
         Label p1Wins = new Label("0 wins");
         VBox player1Box = new VBox(redCircle, p1Name, p1Wins);
         player1Box.setAlignment(Pos.CENTER);
@@ -126,10 +126,20 @@ public class GameplayScene {
             Rectangle clickableArea = new Rectangle(50, 300);
             clickableArea.setFill(Color.TRANSPARENT);
             clickableArea.setOnMouseClicked((MouseEvent e) -> {
-                if (!myTurn[0] || gameOver[0] || columnHeights[currentCol] >= 6) {
-                    System.out.println("[CLIENT] Move blocked - Turn:" + myTurn[0] + 
-                                    " GameOver:" + gameOver[0] + 
-                                    " Column:" + columnHeights[currentCol]);
+                System.out.println("[CLIENT] Click detected - myTurn:" + myTurn[0] + 
+                                " gameOver:" + gameOver[0] + 
+                                " colHeight:" + columnHeights[currentCol]);
+                
+                if (!myTurn[0]) {
+                    System.out.println("[CLIENT] Move rejected - not your turn");
+                    return;
+                }
+                if (gameOver[0]) {
+                    System.out.println("[CLIENT] Move rejected - game over");
+                    return;
+                }
+                if (columnHeights[currentCol] >= 6) {
+                    System.out.println("[CLIENT] Move rejected - column full");
                     return;
                 }
 
@@ -140,11 +150,10 @@ public class GameplayScene {
                                                 sceneManager.getUsername());
                     sceneManager.getClient().sendMessage(moveMsg);
                     myTurn[0] = false;
-                    turnLabel.setText("Waiting for opponent...");
+                    turnLabel.setText("Processing move...");
                 } catch (IOException ex) {
                     System.out.println("[CLIENT] Error sending move: " + ex.getMessage());
-                    Platform.runLater(() -> 
-                        turnLabel.setText("Error sending move to server"));
+                    Platform.runLater(() -> turnLabel.setText("Error sending move"));
                 }
             });
             boardGrid.add(clickableArea, col, 0, 1, 6);
@@ -170,7 +179,7 @@ public class GameplayScene {
                 while (true) {
                     Message msg = sceneManager.getClient().readMessage();
                     Platform.runLater(() -> {
-                        System.out.println("[CLIENT] Received: " + msg.getType());
+                        System.out.println("[CLIENT] Received: " + msg.getType() + " - " + msg.getMessage());
                         switch (msg.getType()) {
                             case MOVE_VALID -> {
                                 String[] parts = msg.getMessage().split(",");
@@ -186,12 +195,22 @@ public class GameplayScene {
                             }
                             case YOUR_TURN -> {
                                 myTurn[0] = true;
-                                System.out.println("[CLIENT] It's now my turn!");
-                                turnLabel.setText("Your turn - Click a column");
+                                System.out.println("[CLIENT] TURN GRANTED TO PLAYER");
+                                turnLabel.setText("YOUR TURN - Click a column");
+                                System.out.println("[CLIENT DEBUG] myTurn=" + myTurn[0] + 
+                                                 " gameOver=" + gameOver[0]);
                             }
                             case WAIT -> {
                                 myTurn[0] = false;
                                 turnLabel.setText("Waiting for opponent...");
+                            }
+                            case GAME_START -> {
+                                String[] players = msg.getMessage().split(" vs ");
+                                myTurn[0] = sceneManager.getUsername().equals(players[0]);
+                                turnLabel.setText(myTurn[0] ? "YOUR TURN - Click a column" : "Waiting for opponent...");
+                                p2Name.setText(players[1]);
+                                System.out.println("[CLIENT] Game started. I am " + 
+                                                 (myTurn[0] ? "FIRST" : "SECOND") + " player");
                             }
                             case GAME_END -> {
                                 gameOver[0] = true;
@@ -200,14 +219,6 @@ public class GameplayScene {
                             }
                             case CHAT -> {
                                 chatArea.appendText(msg.getSender() + ": " + msg.getMessage() + "\n");
-                            }
-                            case GAME_START -> {
-                                // Update opponent's name when game starts
-                                if (msg.getMessage().contains("vs")) {
-                                    String[] players = msg.getMessage().split(" vs ");
-                                    p2Name.setText(players[1]);
-                                }
-                                turnLabel.setText("Game started - waiting for turn");
                             }
                         }
                     });

@@ -1,51 +1,111 @@
 package com.example.javafxapp;
 
-
 import java.util.Queue;
-import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class GameManager {
-    private Queue<ClientHandler> waitingPlayers;
-    private List<GameSession> activeGames;
+    private final Queue<ClientHandler> waitingPlayers;
+    private final List<GameSession> activeGames;
 
     public GameManager() {
-        this.waitingPlayers = new LinkedList<>();
+        this.waitingPlayers = new ConcurrentLinkedQueue<>();
         this.activeGames = new ArrayList<>();
     }
 
-    public void addPlayer(ClientHandler client) {
+    public synchronized void addPlayer(ClientHandler client) {
+        Objects.requireNonNull(client, "Client cannot be null");
+        
+        // Prevent duplicate players in queue
+        if (waitingPlayers.contains(client) || client.getUsername() == null) {
+            System.out.println("[MATCHMAKING] Ignoring duplicate or unauthenticated client");
+            return;
+        }
+
         waitingPlayers.add(client);
+        System.out.println("[MATCHMAKING] Added " + client.getUsername() + " to queue (" 
+                         + waitingPlayers.size() + " waiting)");
         matchPlayers();
     }
 
-    public void removePlayer(ClientHandler client) {
-        waitingPlayers.remove(client);
+    public synchronized void removePlayer(ClientHandler client) {
+        if (waitingPlayers.remove(client)) {
+            System.out.println("[MATCHMAKING] Removed " + client.getUsername() + " from queue");
+        }
     }
 
-    private void matchPlayers() {
-        if (waitingPlayers.size() >= 2) {
+    private synchronized void matchPlayers() {
+        while (waitingPlayers.size() >= 2) {
             ClientHandler player1 = waitingPlayers.poll();
             ClientHandler player2 = waitingPlayers.poll();
-            GameSession game = new GameSession(player1, player2);
-            activeGames.add(game);
 
-            Message startMsg = new Message(MessageType.MATCH_FOUND, "", "Server");
-            player1.sendMessage(startMsg);
-            player2.sendMessage(startMsg);
+            // Validate we have two distinct players
+            if (player1 == null || player2 == null) {
+                System.out.println("[MATCHMAKING] Error: Null player in queue");
+                continue;
+            }
 
-            broadcastServerMessage("Game started between " + player1.getUsername() + " and " + player2.getUsername());
+            if (player1.equals(player2)) {
+                System.out.println("[MATCHMAKING] Error: Attempted to match player with themselves");
+                waitingPlayers.add(player1); // Return one player to queue
+                continue;
+            }
+
+            System.out.println("[MATCHMAKING] Creating game between " 
+                            + player1.getUsername() + " and " + player2.getUsername());
+
+            try {
+                GameSession game = new GameSession(player1, player2);
+                activeGames.add(game);
+
+                // Send match found message with opponent info
+                Message startMsg = new Message(
+                    MessageType.MATCH_FOUND,
+                    player1.getUsername() + " vs " + player2.getUsername(),
+                    "Server"
+                );
+
+                player1.sendMessage(startMsg);
+                player2.sendMessage(startMsg);
+
+                broadcastServerMessage("Game started between " 
+                                    + player1.getUsername() + " and " 
+                                    + player2.getUsername());
+            } catch (IllegalArgumentException e) {
+                System.out.println("[MATCHMAKING] Error creating game: " + e.getMessage());
+                waitingPlayers.add(player1);
+                waitingPlayers.add(player2);
+            }
         }
     }
 
-    public void broadcastServerMessage(String message) {
+    public synchronized void broadcastServerMessage(String message) {
         Message serverMessage = new Message(MessageType.CHAT, message, "Server");
+        
+        // Broadcast to waiting players
         for (ClientHandler player : waitingPlayers) {
-            player.sendMessage(serverMessage);
+            try {
+                player.sendMessage(serverMessage);
+            } catch (Exception e) {
+                System.out.println("[BROADCAST] Error sending to " + player.getUsername());
+            }
         }
+        
+        // Broadcast to active games
         for (GameSession game : activeGames) {
-            game.broadcastMessage(serverMessage);
+            try {
+                game.broadcastMessage(serverMessage);
+            } catch (Exception e) {
+                System.out.println("[BROADCAST] Error broadcasting to game session");
+            }
         }
     }
-} 
+
+    public synchronized void removeGame(GameSession game) {
+        if (activeGames.remove(game)) {
+            System.out.println("[MATCHMAKING] Removed completed game session");
+        }
+    }
+}

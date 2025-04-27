@@ -14,11 +14,16 @@ public class ServerMain {
     private volatile boolean running;
     private Set<String> activeUsernames = ConcurrentHashMap.newKeySet();
 
-    public ServerMain(ServerGUI gui) {
+    // ✅ No-arg constructor
+    public ServerMain() {
         this.port = 5001;
         this.gameManager = new GameManager();
-        this.gui = gui;
         this.running = false;
+    }
+
+    // ✅ Set GUI later
+    public void setGUI(ServerGUI gui) {
+        this.gui = gui;
     }
 
     public void start() {
@@ -27,7 +32,7 @@ public class ServerMain {
             serverSocket = new ServerSocket(port);
             gui.appendToLog("Connecting to port 127.0.0.1...");
             gui.appendToLog("Successfully connected to port 127.0.0.1");
-            
+
             while (running) {
                 try {
                     Socket socket = serverSocket.accept();
@@ -46,7 +51,7 @@ public class ServerMain {
     private void handleNewConnection(Socket socket) {
         ClientHandler client = new ClientHandler(socket, this);
         new Thread(client).start();
-        gameManager.addPlayer(client);
+        // gameManager.addPlayer(client); — handled after CONNECT
     }
 
     public void stop() {
@@ -60,8 +65,8 @@ public class ServerMain {
         }
     }
 
-    public void playerConnected(String playerName) {
-        gui.addPlayer(playerName);
+    public void playerConnected(String playerName, ClientHandler client) {
+        gui.addPlayer(client);
         gui.appendToLog("Player " + playerName + " has connected to the server.");
     }
 
@@ -74,8 +79,8 @@ public class ServerMain {
         return gameManager;
     }
 
-        public boolean isUsernameTaken(String username) {
-            return activeUsernames.contains(username);
+    public boolean isUsernameTaken(String username) {
+        return activeUsernames.contains(username);
     }
 
     public synchronized boolean registerUsername(String username) {
@@ -88,3 +93,4 @@ public class ServerMain {
         activeUsernames.remove(username);
     }
 }
+

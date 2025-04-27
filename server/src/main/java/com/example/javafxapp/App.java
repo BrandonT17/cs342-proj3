@@ -10,15 +10,18 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) {
-        // Create the GUI
-        serverGUI = new ServerGUI();
+        // Create server first
+        server = new ServerMain(); // Use default constructor
+        serverGUI = new ServerGUI(server); // Pass server to GUI
+        server.setGUI(serverGUI);          // Link GUI to server
+
+        // GUI setup
         Scene scene = new Scene(serverGUI, 800, 600);
         stage.setScene(scene);
         stage.setTitle("Server GUI");
         stage.show();
 
-        // Start the server in a separate thread
-        server = new ServerMain(serverGUI);
+        // Run server in new thread
         Thread serverThread = new Thread(() -> server.start());
         serverThread.setDaemon(true);
         serverThread.start();
@@ -35,3 +38,4 @@ public class App extends Application {
         launch(args);
     }
 }
+

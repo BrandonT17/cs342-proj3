@@ -14,8 +14,7 @@ public class GameLogic {
 
     public boolean makeMove(int column, int player) {
         if (column < 0 || column >= COLS) return false;
-        
-        // Find the lowest empty row in the column
+
         for (int row = ROWS - 1; row >= 0; row--) {
             if (board[row][column] == 0) {
                 board[row][column] = player;
@@ -31,6 +30,14 @@ public class GameLogic {
         if (lastMoveRow == -1 || lastMoveCol == -1) return false;
         int player = board[lastMoveRow][lastMoveCol];
         return checkHorizontal() || checkVertical() || checkDiagonal();
+    }
+
+    public boolean checkWin(int player) {
+        return checkWin();
+    }
+
+    public boolean isDraw() {
+        return isBoardFull();
     }
 
     private boolean checkHorizontal() {
@@ -140,4 +147,5 @@ public class GameLogic {
     public int getLastMoveCol() {
         return lastMoveCol;
     }
-} 
+}
+

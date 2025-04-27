@@ -1,4 +1,5 @@
 package com.example.javafxapp;
+
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -12,8 +13,12 @@ public class ServerGUI extends BorderPane {
     private TextField inputField;
     private Button sendButton;
     private ObservableList<String> onlinePlayers;
+    
+    private ServerMain server; // ✅ Added reference to ServerMain
 
-    public ServerGUI() {
+    public ServerGUI(ServerMain server) { // ✅ Accept ServerMain as constructor arg
+        this.server = server;
+
         // Initialize components
         onlinePlayers = FXCollections.observableArrayList();
         onlinePlayersListView = new ListView<>(onlinePlayers);
@@ -35,12 +40,12 @@ public class ServerGUI extends BorderPane {
         // Create right panel
         VBox rightPanel = new VBox(5);
         Label outputLabel = new Label("Server Output");
-        
+
         // Create input panel
         HBox inputPanel = new HBox(5);
         inputPanel.getChildren().addAll(inputField, sendButton);
         HBox.setHgrow(inputField, Priority.ALWAYS);
-        
+
         rightPanel.getChildren().addAll(outputLabel, serverOutputArea, inputPanel);
         rightPanel.setPadding(new Insets(10));
         VBox.setVgrow(serverOutputArea, Priority.ALWAYS);
@@ -53,10 +58,12 @@ public class ServerGUI extends BorderPane {
         sendButton.setOnAction(e -> handleSendMessage());
     }
 
-    public void addPlayer(String playerName) {
+    public synchronized void addPlayer(ClientHandler client) {
         Platform.runLater(() -> {
-            if (!onlinePlayers.contains(playerName)) {
-                onlinePlayers.add(playerName);
+            if (!onlinePlayers.contains(client.getUsername())) {
+                onlinePlayers.add(client.getUsername());
+                server.getGameManager().addPlayer(client); // ✅ Delegates to GameManager
+                System.out.println("[SERVER] Added " + client.getUsername() + " to waiting queue.");
             }
         });
     }
@@ -67,8 +74,9 @@ public class ServerGUI extends BorderPane {
 
     public void appendToLog(String message) {
         Platform.runLater(() -> {
-            serverOutputArea.appendText("[" + String.format("%02d:%02d:00", java.time.LocalTime.now().getHour(), 
-                                      java.time.LocalTime.now().getMinute()) + "] " + message + "\n");
+            serverOutputArea.appendText("[" +
+                String.format("%02d:%02d:00", java.time.LocalTime.now().getHour(),
+                java.time.LocalTime.now().getMinute()) + "] " + message + "\n");
         });
     }
 
@@ -79,4 +87,5 @@ public class ServerGUI extends BorderPane {
             inputField.clear();
         }
     }
-} 
+}
+
