@@ -13,7 +13,6 @@ import javafx.scene.image.ImageView;
 
 public class GameEndScene {
     public static Scene create(SceneManager sceneManager) {
-        // === Top-left logo ===
         Image image = new Image(GameEndScene.class.getResourceAsStream("/connect4logo.png"));
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(200);
@@ -24,7 +23,6 @@ public class GameEndScene {
         imgBox.setPadding(new Insets(10)); // remove any spacing
         imgBox.setPickOnBounds(false);
 
-        // === Center content ===
         Label gameEndMessage = new Label("Congratulations...");
         gameEndMessage.setTextFill(Color.WHITE);
         gameEndMessage.setStyle("-fx-font-size: 20px;");
@@ -41,7 +39,6 @@ public class GameEndScene {
         BorderPane contentPane = new BorderPane();
         contentPane.setCenter(centerLayout);
 
-        // === Stack everything ===
         StackPane root = new StackPane();
         root.getChildren().addAll(contentPane, imgBox);
         StackPane.setAlignment(imgBox, Pos.TOP_LEFT);

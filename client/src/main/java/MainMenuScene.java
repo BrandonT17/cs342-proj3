@@ -17,13 +17,11 @@ import javafx.scene.text.Font;
 
 public class MainMenuScene {
     public static Scene create(SceneManager sceneManager) {
-        // App logo
         Image image = new Image(MainMenuScene.class.getResourceAsStream("/connect4logo.png"));
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(300);
         imageView.setPreserveRatio(true);
 
-        // Username prompt and input
         Label prompt = new Label("Enter your username:");
         prompt.setFont(new Font(18));
         prompt.setTextFill(Color.WHITE);
@@ -32,14 +30,11 @@ public class MainMenuScene {
         usernameField.setPromptText("Type username here");
         usernameField.setMaxWidth(300);
 
-        // Status label (valid/invalid)
         Label validity = new Label();
         validity.setTextFill(Color.WHITE);
 
-        // Connect button
         Button connect = new Button("Connect");
 
-        // On click, try to connect and send username
         connect.setOnAction(e -> {
             String username = usernameField.getText().trim();
             if (username.isEmpty()) {
@@ -74,7 +69,6 @@ public class MainMenuScene {
             }
         });
 
-        // Layout setup
         VBox mainLayout = new VBox(imageView, prompt, usernameField, validity, connect);
         mainLayout.setSpacing(20);
         mainLayout.setAlignment(Pos.CENTER);

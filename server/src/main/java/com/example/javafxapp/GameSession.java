@@ -33,11 +33,9 @@ public class GameSession {
     }
 
     public synchronized void startGame() {
-        // Send game start with player order
         String playerNames = player1.getUsername() + " vs " + player2.getUsername();
         broadcastMessage(new Message(MessageType.GAME_START, playerNames, "Server"));
         
-        // Forcefully set first turn to player1
         this.currentTurn = 1;
         System.out.println("[GAME] First turn granted to " + player1.getUsername());
         player1.sendMessage(new Message(MessageType.YOUR_TURN, "", "Server"));
@@ -66,7 +64,6 @@ public class GameSession {
             return;
         }
 
-        // Broadcast valid move
         Message moveMsg = new Message(
             MessageType.MOVE_VALID, 
             playerNumber + "," + column, 
@@ -74,7 +71,6 @@ public class GameSession {
         );
         broadcastMessage(moveMsg);
 
-        // Check game state
         if (gameBoard.checkWin(playerNumber)) {
             endGame("Player " + playerNumber + " wins!");
         } else if (gameBoard.isDraw()) {

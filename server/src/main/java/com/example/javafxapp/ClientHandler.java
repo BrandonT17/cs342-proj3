@@ -72,12 +72,10 @@ public class ClientHandler implements Runnable {
         running = false;
 
         try {
-            // Notify game session if active
             if (currentGame != null) {
                 currentGame.handleDisconnect(this);
             }
 
-            // Remove from server tracking
             if (username != null) {
                 server.unregisterUsername(username);
                 server.playerDisconnected(username);

@@ -18,7 +18,6 @@ public class GameManager {
     public synchronized void addPlayer(ClientHandler client) {
         Objects.requireNonNull(client, "Client cannot be null");
         
-        // Prevent duplicate players in queue
         if (waitingPlayers.contains(client) || client.getUsername() == null) {
             System.out.println("[MATCHMAKING] Ignoring duplicate or unauthenticated client");
             return;
@@ -41,7 +40,6 @@ public class GameManager {
             ClientHandler player1 = waitingPlayers.poll();
             ClientHandler player2 = waitingPlayers.poll();
 
-            // Validate we have two distinct players
             if (player1 == null || player2 == null) {
                 System.out.println("[MATCHMAKING] Error: Null player in queue");
                 continue;
@@ -60,7 +58,6 @@ public class GameManager {
                 GameSession game = new GameSession(player1, player2);
                 activeGames.add(game);
 
-                // Send match found message with opponent info
                 Message startMsg = new Message(
                     MessageType.MATCH_FOUND,
                     player1.getUsername() + " vs " + player2.getUsername(),
@@ -84,7 +81,6 @@ public class GameManager {
     public synchronized void broadcastServerMessage(String message) {
         Message serverMessage = new Message(MessageType.CHAT, message, "Server");
         
-        // Broadcast to waiting players
         for (ClientHandler player : waitingPlayers) {
             try {
                 player.sendMessage(serverMessage);
@@ -93,7 +89,6 @@ public class GameManager {
             }
         }
         
-        // Broadcast to active games
         for (GameSession game : activeGames) {
             try {
                 game.broadcastMessage(serverMessage);

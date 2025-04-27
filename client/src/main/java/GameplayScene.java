@@ -25,7 +25,6 @@ public class GameplayScene {
         roundLabel.setFont(new Font(24));
         roundLabel.setTextFill(Color.WHITE);
 
-        // Player 1 UI
         Circle redCircle = new Circle(30, Color.RED);
         Label p1Name = new Label(sceneManager.getUsername());
         Label p1Wins = new Label("0 wins");
@@ -36,7 +35,6 @@ public class GameplayScene {
         player1Box.setStyle("-fx-background-color: white;");
         player1Box.setMinWidth(100);
 
-        // Player 2 UI
         Circle yellowCircle = new Circle(30, Color.YELLOW);
         Label p2Name = new Label("Waiting for opponent...");
         Label p2Wins = new Label("0 wins");
@@ -47,7 +45,6 @@ public class GameplayScene {
         player2Box.setStyle("-fx-background-color: white;");
         player2Box.setMinWidth(100);
 
-        // Game state variables
         int[] columnHeights = new int[7];
         int[][] boardState = new int[6][7];
         int[] currentPlayer = {1};
@@ -55,7 +52,6 @@ public class GameplayScene {
         boolean[] gameOver = {false};
         boolean[] myTurn = {false};
 
-        // Game board setup
         GridPane boardGrid = new GridPane();
         boardGrid.setHgap(5);
         boardGrid.setVgap(5);
@@ -74,7 +70,6 @@ public class GameplayScene {
         Label turnLabel = new Label("Waiting for game to start...");
         turnLabel.setTextFill(Color.WHITE);
 
-        // Chat components
         TextArea chatArea = new TextArea();
         chatArea.setPromptText("Chats will display here");
         chatArea.setPrefHeight(50);
@@ -94,14 +89,12 @@ public class GameplayScene {
         chatBox.setSpacing(5);
         chatBox.setAlignment(Pos.CENTER);
 
-        // Game control buttons
         Button quitGame = new Button("Quit Game");
         Button reset = new Button("Reset");
         HBox bottomButtons = new HBox(quitGame, reset);
         bottomButtons.setSpacing(20);
         bottomButtons.setAlignment(Pos.CENTER);
 
-        // Layout organization
         VBox leftCol = new VBox(player1Box);
         leftCol.setAlignment(Pos.CENTER);
         VBox rightCol = new VBox(player2Box);
@@ -120,7 +113,6 @@ public class GameplayScene {
         mainLayout.setPadding(new Insets(20));
         mainLayout.setStyle("-fx-background-color: linear-gradient(to bottom, #3a9bdc, #0d58a6);");
 
-        // Column click handlers
         for (int col = 0; col < 7; col++) {
             int currentCol = col;
             Rectangle clickableArea = new Rectangle(50, 300);
@@ -159,7 +151,6 @@ public class GameplayScene {
             boardGrid.add(clickableArea, col, 0, 1, 6);
         }
 
-        // Chat message handler
         sendBtn.setOnAction(e -> {
             String text = chatInput.getText().trim();
             if (!text.isEmpty()) {
@@ -173,7 +164,6 @@ public class GameplayScene {
             }
         });
 
-        // Message listener thread
         new Thread(() -> {
             try {
                 while (true) {
@@ -231,7 +221,6 @@ public class GameplayScene {
             }
         }).start();
 
-        // Reset button handler
         reset.setOnAction(e -> {
             try {
                 Message resetMsg = new Message(MessageType.RESET, "", sceneManager.getUsername());
@@ -241,7 +230,6 @@ public class GameplayScene {
             }
         });
 
-        // Quit button handler
         quitGame.setOnAction(e -> {
             try {
                 sceneManager.getClient().sendMessage(
@@ -265,13 +253,11 @@ public class GameplayScene {
 
     private static boolean checkDirection(int[][] board, int row, int col, int player, int dr, int dc) {
         int count = 1;
-        // Check in positive direction
         for (int r = row + dr, c = col + dc; 
              r >= 0 && r < 6 && c >= 0 && c < 7 && board[r][c] == player; 
              r += dr, c += dc) {
             count++;
         }
-        // Check in negative direction
         for (int r = row - dr, c = col - dc; 
              r >= 0 && r < 6 && c >= 0 && c < 7 && board[r][c] == player; 
              r -= dr, c -= dc) {

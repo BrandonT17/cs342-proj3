@@ -14,14 +14,12 @@ public class ServerMain {
     private volatile boolean running;
     private Set<String> activeUsernames = ConcurrentHashMap.newKeySet();
 
-    // ✅ No-arg constructor
     public ServerMain() {
         this.port = 5001;
         this.gameManager = new GameManager();
         this.running = false;
     }
 
-    // ✅ Set GUI later
     public void setGUI(ServerGUI gui) {
         this.gui = gui;
     }

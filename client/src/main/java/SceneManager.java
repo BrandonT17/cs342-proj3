@@ -7,7 +7,6 @@ import javafx.stage.Stage;
 public class SceneManager {
     private Stage stage;
 
-    // ✅ Add these fields
     private NetworkClient client;
     private String username;
 
@@ -15,7 +14,6 @@ public class SceneManager {
         this.stage = stage;
     }
 
-    // ✅ Setters and Getters
     public void setClient(NetworkClient client) {
         this.client = client;
     }
@@ -32,7 +30,6 @@ public class SceneManager {
         return username;
     }
 
-    // Scene transitions
     public void showMainMenu() {
         stage.setScene(MainMenuScene.create(this));
         stage.setTitle("Connect 4 - JavaFX Edition");
